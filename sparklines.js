@@ -5,6 +5,7 @@ var Sparkline = function(id,data,mixins) {
   this.background = 50;
   this.stroke = 230;
   this.percentage_color = "#5555FF";
+  this.percentage_fill_color = 75;
   this.canvas = document.getElementById(id);
   this.data = data;
   this.top_padding = 10;
@@ -12,6 +13,7 @@ var Sparkline = function(id,data,mixins) {
   this.left_padding = 10;
   this.right_padding = 10;
   this.percentage_lines = [0.5];
+  this.fill_between_percentage_lines = true;
 
   this.parse_height = function(x) {
     /*  Parse height is used to find the height
@@ -95,8 +97,19 @@ var Sparkline = function(id,data,mixins) {
 	scaled = sl.scale_data();
 	var l = scaled.length;
 
-	// Draw percentage lines.
+
 	var percentages = sl.calc_percentages();
+	if (sl.fill_between_percentage_lines && percentages.length > 1) {
+	  noStroke();
+	  fill(sl.percentage_fill_color);
+	  var height = percentages[percentages.length-1] - percentages[0];
+	  var width = scaled[l-1].x - scaled[0].x;
+	  rect(scaled[0].x, percentages[0], width, height);
+
+	}
+
+
+	// Draw percentage lines.
 	stroke(sl.percentage_color);
 	for (var j=0;j<percentages.length;j++) {
 	  var y = percentages[j];

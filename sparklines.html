@@ -15,6 +15,8 @@ var setup_sparklines = function() {
   new Sparkline('simple3',data, opts).draw();
   opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
   new Sparkline('simple4',data, opts).draw();
+  opts = {"percentage_lines":[0.25,0.75]};
+  new Sparkline('simple5',data,opts).draw();
   
 };
 
@@ -48,6 +50,11 @@ var opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"}
 new Sparkline('simple4',data, opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple4" ></canvas>
 
+<p> Well, lets remove the line at 50%, and have them at 25% and 75% instead. </p>
+<pre><code>ar data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {"percentage_lines":[0.25,0.75]};
+new Sparkline('simple5',data,opts).draw();</code></pre>
+<canvas width="500" height="50" id="simple5" ></canvas>
 
 <h4> Source </h4>
 <ul>
