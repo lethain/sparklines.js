@@ -6,12 +6,16 @@
 
 <script>
 var setup_sparklines = function() {
+  var opts = {};
   var data = [100,500,300,200,400,500,400,400,100,200];
-  var a = new Sparkline('simple1', data);
-  var opts = {'left_padding':50,'right_padding':50,'top_padding':50, 'bottom_padding':50};
-  var b = new Sparkline('simple2',data, opts);
-  a.draw();
-  b.draw();
+  new Sparkline('simple1', data).draw();
+  opts = {'left_padding':50,'right_padding':50,'top_padding':25, 'bottom_padding':25};
+  new Sparkline('simple2',data, opts).draw();
+  opts = {'left_padding':0,'right_padding':0,'top_padding':0, 'bottom_padding':0};
+  new Sparkline('simple3',data, opts).draw();
+  opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
+  new Sparkline('simple4',data, opts).draw();
+  
 };
 
 
@@ -20,12 +24,29 @@ var setup_sparklines = function() {
 <body onload="setup_sparklines();">
 <h1>Sparklines.js</h1>
 
-<p> An extremely simple sparkline. </p>
-<canvas width="500" height="150" id="simple1" ></canvas>
+<p> A simple sparkline. </p>
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
+new Sparkline('simple1', data).draw();</code></pre>
+<canvas width="300" height="50" id="simple1" ></canvas>
 
+<p> The same sparkline, with excessive padding, in a taller
+canvas. </p>
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {'left_padding':50,'right_padding':50,'top_padding':25, 'bottom_padding':25};
+new Sparkline('simple2',data, opts).draw();</code></pre>
+<canvas width="300" height="100" id="simple2" ></canvas>
 
-<p> The same sparkline, without any padding. </p>
-<canvas width="500" height="150" id="simple2" ></canvas>
+<p> The same sparkline, with no padding, drawn in a longer canvas. </p>
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {'left_padding':0,'right_padding':0,'top_padding':0, 'bottom_padding':0};
+new Sparkline('simple3',data, opts).draw();</code></pre>
+<canvas width="500" height="50" id="simple3" ></canvas>
+
+<p> Let's change up the colors. </p>
+<pre><code>ar data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
+new Sparkline('simple4',data, opts).draw();</code></pre>
+<canvas width="500" height="50" id="simple4" ></canvas>
 
 
 <h4> Source </h4>
