@@ -15,8 +15,12 @@ var setup_sparklines = function() {
   new Sparkline('simple3',data, opts).draw();
   opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
   new Sparkline('simple4',data, opts).draw();
+  opts = {"percentage_lines":[0.5]};
+  new Sparkline('simple5a',data,opts).draw();
   opts = {"percentage_lines":[0.25,0.75]};
   new Sparkline('simple5',data,opts).draw();
+  opts = {"percentage_lines":[0.25,0.75],"fill_between_percentage_lines":true};
+  new Sparkline('simple6',data,opts).draw();
   
 };
 
@@ -45,16 +49,28 @@ new Sparkline('simple3',data, opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple3" ></canvas>
 
 <p> Let's change up the colors. </p>
-<pre><code>ar data = [100,500,300,200,400,500,400,400,100,200];
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
 new Sparkline('simple4',data, opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple4" ></canvas>
 
-<p> Well, lets remove the line at 50%, and have them at 25% and 75% instead. </p>
-<pre><code>ar data = [100,500,300,200,400,500,400,400,100,200];
+<p> Well, it would be kind of neat to see the median (Q2). </p>
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {"percentage_lines":[0.5]};
+new Sparkline('simple5a',data,opts).draw();</code></pre>
+<canvas width="500" height="50" id="simple5a" ></canvas>
+
+<p> Well, lets remove the line at Q2, and have them at Q1 and Q3 instead. </p>
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {"percentage_lines":[0.25,0.75]};
 new Sparkline('simple5',data,opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple5" ></canvas>
+
+<p> It would kind of helpful to color the interquartile range. </p>
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {"percentage_lines":[0.25,0.75],"fill_between_percentage_lines":true};
+new Sparkline('simple6',data,opts).draw();</code></pre>
+<canvas width="500" height="50" id="simple6" ></canvas>
 
 <h4> Source </h4>
 <ul>

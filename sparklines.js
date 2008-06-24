@@ -12,8 +12,8 @@ var Sparkline = function(id,data,mixins) {
   this.bottom_padding = 10;
   this.left_padding = 10;
   this.right_padding = 10;
-  this.percentage_lines = [0.5];
-  this.fill_between_percentage_lines = true;
+  this.percentage_lines = [];
+  this.fill_between_percentage_lines = false;
 
   this.parse_height = function(x) {
     /*  Parse height is used to find the height
