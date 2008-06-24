@@ -1,16 +1,17 @@
 /* Sparklines.js */
 
+
 var Sparkline = function(id,data,mixins) {
   this.background = 50;
   this.stroke = 230;
-  this.average_color = "#5555FF";
+  this.percentage_color = "#5555FF";
   this.canvas = document.getElementById(id);
   this.data = data;
   this.top_padding = 10;
   this.bottom_padding = 10;
   this.left_padding = 10;
   this.right_padding = 10;
-  this.draw_average = true;
+  this.percentage_lines = [0.5];
 
   this.parse_height = function(x) {
     /*  Parse height is used to find the height
@@ -24,7 +25,7 @@ var Sparkline = function(id,data,mixins) {
     return x;
   };
 
-  this.calc_average = function() {
+  this.calc_percentages = function() {
     var sum = 0;
     var l = this.data.length;
     var max = this.parse_height(this.data[0]);
@@ -35,9 +36,14 @@ var Sparkline = function(id,data,mixins) {
     }
     var h = this.canvas.height - this.top_padding - this.bottom_padding;
     var avg = (sum*1.0) / l;
-    var percentage = (avg * 1.0) / max;
-    var raw = h - (h * percentage) + this.top_padding;
-    return raw;
+
+    var raws = [];
+    for (var i=0;i<this.percentage_lines.length;i++) {
+      var percent_line = this.percentage_lines[i];
+      var percentage_height = h - (h * ((2 * avg * percent_line)/max)) + this.top_padding;
+      raws.push(percentage_height);
+    }
+    return raws;
   };
 
   this.scale_height = function() {
@@ -83,20 +89,18 @@ var Sparkline = function(id,data,mixins) {
   this.draw = function() {
     var sl = this;
     with(Processing(sl.canvas)) {
-      setup = function() {
-	stroke(sl.stroke);
-	background(sl.background);
-      };
+      setup = function() {};
       draw = function() {
 	background(sl.background);
 	scaled = sl.scale_data();
 	var l = scaled.length;
 
-	// Draw average line.
-	if (sl.draw_average) {
-	  stroke(sl.average_color);
-	  var avg = sl.calc_average();
-	  line(scaled[0].x,avg,scaled[l-1].x,avg);
+	// Draw percentage lines.
+	var percentages = sl.calc_percentages();
+	stroke(sl.percentage_color);
+	for (var j=0;j<percentages.length;j++) {
+	  var y = percentages[j];
+	  line(scaled[0].x,y,scaled[l-1].x,y);
 	}
 
 	// Draw lines between data points.
