@@ -6,6 +6,8 @@ var Sparkline = function(id,data,mixins) {
   this.stroke = 230;
   this.percentage_color = "#5555FF";
   this.percentage_fill_color = 75;
+  this.value_line_color = "##7777FF";
+  this.value_line_fill_color = 85;
   this.canvas = document.getElementById(id);
   this.data = data;
   this.top_padding = 10;
@@ -14,6 +16,9 @@ var Sparkline = function(id,data,mixins) {
   this.right_padding = 10;
   this.percentage_lines = [];
   this.fill_between_percentage_lines = false;
+  this.value_lines = [];
+  this.fill_between_value_lines = false;
+
 
   this.parse_height = function(x) {
     /*  Parse height is used to find the height
@@ -27,24 +32,46 @@ var Sparkline = function(id,data,mixins) {
     return x;
   };
 
-  this.calc_percentages = function() {
-    var sum = 0;
-    var l = this.data.length;
-    var max = this.parse_height(this.data[0]);
-    for (var i=0;i<l;i++) {
-      var h = this.parse_height(this.data[i]);
-      max = Math.max(max,h);
-      sum += h;
-    }
+  this.calc_value_lines = function() {
+    var vals = this.data.map(this.parse_height);
+    var max = vals[0];
+    var l = vals.length;
+    for (var i=0;i<l;i++) max = Math.max(max, vals[i]);
     var h = this.canvas.height - this.top_padding - this.bottom_padding;
-    var avg = (sum*1.0) / l;
+    var scale = function(x) {
+      var percentage = (x*1.0)/max;
+      return h - (h * percentage) + this.top_padding;
+    };
+    return vals.map(scale);
+  };
 
-    var raws = [];
-    for (var i=0;i<this.percentage_lines.length;i++) {
-      var percent_line = this.percentage_lines[i];
-      var percentage_height = h - (h * ((2 * avg * percent_line)/max)) + this.top_padding;
-      raws.push(percentage_height);
+  this.calc_percentages = function() {
+    var sorted = this.data.map(this.parse_height);
+    sorted.sort(function(a,b) { return a-b; });
+
+    // Find data points at percentages.
+    var points = [];
+    var n = sorted.length;
+    var l = this.percentage_lines.length;
+    for (var i=0;i<l;i++) {
+      var percentage = this.percentage_lines[i];
+      var position = Math.round(percentage*(n+1));
+      points.push(sorted[position]);
     }
+
+    // Scale data points to size.
+    var h = this.canvas.height - this.top_padding - this.bottom_padding;
+    var raws = [];
+    var max = sorted[n-1];
+    var pl = points.length;
+
+    for (var j=0;j<pl;j++) {
+      var point = points[j];
+      var percentage = (point*1.0)/max;
+      var raw = h - (h * percentage) + this.top_padding;
+      raws.push(raw);
+    }
+    raws.sort(function(a,b) { return a-b; });
     return raws;
   };
 
@@ -99,15 +126,23 @@ var Sparkline = function(id,data,mixins) {
 
 
 	var percentages = sl.calc_percentages();
+	// Draw fill between percentage lines, if applicable.
 	if (sl.fill_between_percentage_lines && percentages.length > 1) {
 	  noStroke();
 	  fill(sl.percentage_fill_color);
 	  var height = percentages[percentages.length-1] - percentages[0];
 	  var width = scaled[l-1].x - scaled[0].x;
 	  rect(scaled[0].x, percentages[0], width, height);
-
 	}
 
+	// Draw value lines.
+	var value_lines = sl.calc_value_lines();
+	// Draw value lines.
+	stroke(sl.value_line_color);
+	for (var h=0;h<value_lines.length;h++) {
+	  var y = value_lines[h];
+	  line(scaled[0].x,y,scaled[l-1].x,y);
+	}
 
 	// Draw percentage lines.
 	stroke(sl.percentage_color);

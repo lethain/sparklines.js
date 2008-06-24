@@ -1,5 +1,5 @@
 <html> <head>
-<title>ExchangeChart</title>
+<title>Sparklines.js</title>
 <script type="text/javascript" src="processing.js"></script>
 <script type="text/javascript" src="sparklines.js"></script>
 </head>
@@ -13,7 +13,7 @@ var setup_sparklines = function() {
   new Sparkline('simple2',data, opts).draw();
   opts = {'left_padding':0,'right_padding':0,'top_padding':0, 'bottom_padding':0};
   new Sparkline('simple3',data, opts).draw();
-  opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
+  opts = {"background":"#FFEEDD","stroke":"#001122"};
   new Sparkline('simple4',data, opts).draw();
   opts = {"percentage_lines":[0.5]};
   new Sparkline('simple5a',data,opts).draw();
@@ -21,6 +21,21 @@ var setup_sparklines = function() {
   new Sparkline('simple5',data,opts).draw();
   opts = {"percentage_lines":[0.25,0.75],"fill_between_percentage_lines":true};
   new Sparkline('simple6',data,opts).draw();
+
+  var data2 = [100,200,500,1000,600,900,300,500,800,800,900,1000,50,40,200,100,900,300,400,
+               400,600,700,800,900,700,800,50,100,100];
+  opts = {"percentage_lines":[0.25,0.5,0.75],"fill_between_percentage_lines":true};
+  new Sparkline('simple7',data2,opts).draw();
+  opts = {"percentage_lines":[0.25,0.5,0.75],"fill_between_percentage_lines":true,
+          "left_padding":1,"right_padding":1,"top_padding":1,"bottom_padding":1,
+          "background":"#FFFFFF","stroke":"#444444","percentage_color":"#AAAAFF",
+          "percentage_fill_color":"#CCCCFF"};
+  new Sparkline('simple8', data2, opts).draw();
+
+  var data3 =
+  [120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+  opts = {"value_lines":[80,120],"top_padding":5,"bottom_padding":0};
+  new Sparkline('simple9', data3, opts).draw();
   
 };
 
@@ -30,11 +45,13 @@ var setup_sparklines = function() {
 <body onload="setup_sparklines();">
 <h1>Sparklines.js</h1>
 
+<hr>
 <p> A simple sparkline. </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 new Sparkline('simple1', data).draw();</code></pre>
 <canvas width="300" height="50" id="simple1" ></canvas>
 
+<hr>
 <p> The same sparkline, with excessive padding, in a taller
 canvas. </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
@@ -42,35 +59,86 @@ var opts = {'left_padding':50,'right_padding':50,'top_padding':25, 'bottom_paddi
 new Sparkline('simple2',data, opts).draw();</code></pre>
 <canvas width="300" height="100" id="simple2" ></canvas>
 
+<hr>
 <p> The same sparkline, with no padding, drawn in a longer canvas. </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {'left_padding':0,'right_padding':0,'top_padding':0, 'bottom_padding':0};
 new Sparkline('simple3',data, opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple3" ></canvas>
 
+<hr>
 <p> Let's change up the colors. </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {"background":"#FFEEDD","stroke":"#001122","average_color":"#FF9933"};
 new Sparkline('simple4',data, opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple4" ></canvas>
 
+<hr>
 <p> Well, it would be kind of neat to see the median (Q2). </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {"percentage_lines":[0.5]};
 new Sparkline('simple5a',data,opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple5a" ></canvas>
 
+<hr>
 <p> Well, lets remove the line at Q2, and have them at Q1 and Q3 instead. </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {"percentage_lines":[0.25,0.75]};
 new Sparkline('simple5',data,opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple5" ></canvas>
 
+<hr>
 <p> It would kind of helpful to color the interquartile range. </p>
 <pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
 var opts = {"percentage_lines":[0.25,0.75],"fill_between_percentage_lines":true};
 new Sparkline('simple6',data,opts).draw();</code></pre>
 <canvas width="500" height="50" id="simple6" ></canvas>
+
+<hr>
+<p>
+Lets see that with Q1, Q2, and Q3, with the iterquartile range
+colored, and a richer dataset.
+</p>
+<pre><code>var data2 = [100,200,500,1000,600,900,300,500,800,800,900,1000,50,40,200,100,900,300,400,400,600,700,800,900,700,800,50,100,100];
+var opts = {"percentage_lines":[0.25,0.5,0.75],"fill_between_percentage_lines":true};
+new Sparkline('simple7',data2,opts).draw();</code></pre>
+<canvas width="500" height="50" id="simple7" ></canvas>
+
+<hr>
+<p>
+Okay, now lets customize the hell out of this, and shrink it down to a
+much smaller size that might fit well in a blog entry or merged into a
+simple webapplication.
+</p>
+<pre><code>var data2 = [100,200,500,1000,600,900,300,500,800,800,900,1000,50,40,200,100,900,300,400,400,600,700,800,900,700,800,50,100,100];
+var  opts = {
+  "percentage_lines":[0.25,0.5,0.75],"fill_between_percentage_lines":true,
+  "left_padding":1,"right_padding":1,"top_padding":1,"bottom_padding":1,
+  "background":"#FFFFFF","stroke":"#444444","percentage_color":"#AAAAFF",
+  "percentage_fill_color":"#CCCCFF"
+};
+new Sparkline('simple8', data2, opts).draw();</code></pre>
+<canvas width="100" height="25" id="simple8" ></canvas>
+
+<hr>
+<p>
+<em>Well, this one isn't really working yet. Sorry, work in progress.</em>
+But, you might not want to draw lines at the quartiles (or at
+whatever arbitrary percentage of entries), you might want to draw
+lines at certain values instead. For example, you might want to
+indicate the normal range of blood pressure in a patient.
+</p>
+<pre><code>var data2 = [100,200,500,1000,600,900,300,500,800,800,900,1000,50,40,200,100,900,300,400,400,600,700,800,900,700,800,50,100,100];
+var  opts = {
+  "percentage_lines":[0.25,0.5,0.75],"fill_between_percentage_lines":true,
+  "left_padding":1,"right_padding":1,"top_padding":1,"bottom_padding":1,
+  "background":"#FFFFFF","stroke":"#444444","percentage_color":"#AAAAFF",
+  "percentage_fill_color":"#CCCCFF"
+};
+new Sparkline('simple8', data2, opts).draw();</code></pre>
+<canvas width="200" height="50" id="simple9" ></canvas>
+
+
 
 <h4> Source </h4>
 <ul>
