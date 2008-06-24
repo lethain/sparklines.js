@@ -1,6 +1,6 @@
 /* Sparklines.js */
 
-var Sparkline = function(id,data) {
+var Sparkline = function(id,data,mixins) {
   this.background = 50;
   this.stroke = 230;
   this.canvas = document.getElementById(id);
@@ -31,8 +31,14 @@ var Sparkline = function(id,data) {
       var ratio = (x * 1.0) / max;
       return h - (h * ratio) + this.top_padding;
     };
-    var scaled = this.data.map(scale);
-    return scaled;
+    var heights = [];
+    for (var i=0; i<l;i++) {
+      var x = this.data[i];
+      var ratio = (x * 1.0) / max;
+      var raw = h - (h * ratio) + this.top_padding;
+      heights.push(raw);
+    }
+    return heights;
   };
   this.left_padding = 10;
   this.right_padding = 10;
@@ -56,8 +62,8 @@ var Sparkline = function(id,data) {
     return data;
   };
 
-  sl = this;
   this.draw = function() {
+    var sl = this;
     with(Processing(sl.canvas)) {
       setup = function() {
 	stroke(sl.stroke);
@@ -78,5 +84,10 @@ var Sparkline = function(id,data) {
     };
   };
 
-  this.draw();
+  /* Apply any overriding variables that
+   * are specified in the mixins parameter.
+   */
+  for (var property in mixins) {
+    this[property] = mixins[property];
+  };
 };

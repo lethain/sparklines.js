@@ -4,10 +4,29 @@
 <script type="text/javascript" src="sparklines.js"></script>
 </head>
 
-<body onload="Sparkline('ec',[100,500,300,200,400,500,400,400,100,200]);">
+<script>
+var setup_sparklines = function() {
+  var data = [100,500,300,200,400,500,400,400,100,200];
+  var a = new Sparkline('simple1', data);
+  var opts = {'left_padding':50,'right_padding':50,'top_padding':50, 'bottom_padding':50};
+  var b = new Sparkline('simple2',data, opts);
+  a.draw();
+  b.draw();
+};
+
+
+</script>
+
+<body onload="setup_sparklines();">
 <h1>Sparklines.js</h1>
-<canvas width="500" height="150" id="ec" ></canvas>
- 
+
+<p> An extremely simple sparkline. </p>
+<canvas width="500" height="150" id="simple1" ></canvas>
+
+
+<p> The same sparkline, without any padding. </p>
+<canvas width="500" height="150" id="simple2" ></canvas>
+
 
 <h4> Source </h4>
 <ul>
