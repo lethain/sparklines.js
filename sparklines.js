@@ -1,54 +1,59 @@
 /* Sparklines.js */
 
 
-var Sparkline = function(id,data,mixins) {
-  this.background = 50;
-  this.stroke = 230;
-  this.percentage_color = "#5555FF";
-  this.percentage_fill_color = 75;
-  this.value_line_color = "#7777FF";
-  this.value_line_fill_color = 85;
-  this.canvas = document.getElementById(id);
-  this.data = data;
-  this.top_padding = 10;
-  this.bottom_padding = 10;
-  this.left_padding = 10;
-  this.right_padding = 10;
-  this.percentage_lines = [];
-  this.fill_between_percentage_lines = false;
-  this.value_lines = [];
-  this.fill_between_value_lines = false;
-
-
-  this.parse_height = function(x) {
-    /*  Parse height is used to find the height
-     *  in an element of the Sparkline's data.
-     *  For a simple array of heights like
-     *      s = Sparkline('mycanvas', [1,2,3,4,5]);
-     *  then this simple implementaiton is correct,
-     *  but for more complex data formats you will
-     *  need to override this method.
-     * */
-    return x;
+var BaseSparkline = function() {
+  this.init = function(id,data,mixins) {
+    this.background = 50;
+    this.stroke = 230;
+    this.percentage_color = "#5555FF";
+    this.percentage_fill_color = 75;
+    this.value_line_color = "#7777FF";
+    this.value_line_fill_color = 85;
+    this.canvas = document.getElementById(id);
+    this.data = data;
+    this.top_padding = 10;
+    this.bottom_padding = 10;
+    this.left_padding = 10;
+    this.right_padding = 10;
+    this.percentage_lines = [];
+    this.fill_between_percentage_lines = false;
+    this.value_lines = [];
+    this.fill_between_value_lines = false;
+    for (var property in mixins) this[property] = mixins[property];
   };
 
-  this.calc_value_lines = function() {
-    var vals = this.data.map(this.parse_height);
+  /* Extracts height from a piece of data */
+  this.parse_height = function(x) { return x; };
+  this.heights = function() {
+    return this.data.map(this.parse_height);
+  };
+
+  this.max = function() {
+    var vals = this.heights();
     var max = vals[0];
     var l = vals.length;
-    for (var i=0;i<l;i++) max = Math.max(max, vals[i]);
+    for (var i=0; i<l; i++) max = Math.max(max, vals[i]);
+    return max;
+  };
+  this.scale_values = function(values, max) {
+    if (!max) max = this.max();
     var h = this.canvas.height - this.top_padding - this.bottom_padding;
     var scale = function(x) {
-      var percentage = (x*1.0)/max;
+      var percentage = (x * 1.0) / max;
       return h - (h * percentage) + this.top_padding;
     };
-    var scaled = this.value_lines.map(scale, this);
+    return values.map(scale, this);
+  };
+
+
+  this.calc_value_lines = function() {
+    var scaled = this.scale_values(this.value_lines);
     scaled.sort(function(a,b) { return a-b; });
     return scaled;
   };
 
   this.calc_percentages = function() {
-    var sorted = this.data.map(this.parse_height);
+    var sorted = this.heights();
     sorted.sort(function(a,b) { return a-b; });
 
     // Find data points at percentages.
@@ -62,39 +67,14 @@ var Sparkline = function(id,data,mixins) {
     }
 
     // Scale data points to size.
-    var h = this.canvas.height - this.top_padding - this.bottom_padding;
-    var raws = [];
     var max = sorted[n-1];
-    var pl = points.length;
-
-    for (var j=0;j<pl;j++) {
-      var point = points[j];
-      var percentage = (point*1.0)/max;
-      var raw = h - (h * percentage) + this.top_padding;
-      raws.push(raw);
-    }
+    var raws = this.scale_values(points, max);
     raws.sort(function(a,b) { return a-b; });
     return raws;
   };
 
   this.scale_height = function() {
-    var l = this.data.length;
-    var h = this.canvas.height - this.top_padding - this.bottom_padding;
-
-    // Get maximum value.
-    var max = this.parse_height(this.data[0]);
-    for (var i=0; i<l;i++) {
-      max = Math.max(max,this.parse_height(this.data[i]));
-    }
-
-    // Calculate raw heights based on percentage of max.
-    var heights = [];
-    for (var i=0; i<l;i++) {
-      var percentage = (this.data[i] * 1.0) / max;
-      var raw = h - (h * percentage) + this.top_padding;
-      heights.push(raw);
-    }
-    return heights;
+    return this.scale_values(this.heights());
   };
 
   this.scale_width = function() {
@@ -126,7 +106,6 @@ var Sparkline = function(id,data,mixins) {
 	scaled = sl.scale_data();
 	var l = scaled.length;
 
-
 	var percentages = sl.calc_percentages();
 	// Draw fill between percentage lines, if applicable.
 	if (sl.fill_between_percentage_lines && percentages.length > 1) {
@@ -137,9 +116,6 @@ var Sparkline = function(id,data,mixins) {
 	  rect(scaled[0].x, percentages[0], width, height);
 	}
 
-	  //var value_line_fill_color
-
-
 	var value_lines = sl.calc_value_lines();
 	// Draw fill between value lines, if applicable.
 	if (sl.fill_between_value_lines && value_lines.length > 1) {
@@ -148,7 +124,6 @@ var Sparkline = function(id,data,mixins) {
 	  var height = value_lines[value_lines.length-1] - value_lines[0];
 	  var width = scaled[l-1].x - scaled[0].x;
 	  rect(scaled[0].x, value_lines[0], width, height);
-
 	}
 
 	// Draw value lines.
@@ -177,9 +152,9 @@ var Sparkline = function(id,data,mixins) {
       init();
     };
   };
-
-  // Apply any overriding cust
-  for (var property in mixins) {
-    this[property] = mixins[property];
-  };
 };
+
+var Sparkline = function(id,data,mixins) {
+  this.init(id,data,mixins);
+}
+Sparkline.prototype = new BaseSparkline();
