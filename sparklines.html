@@ -62,16 +62,18 @@ var setup_sparklines = function() {
 <h1 id="top">Sparklines.js</h1>
 
 <ul>
+  <li> <a href="#overview">Overview</a> </li>
   <li> <a href="#data">Data Formats</a> </li>
   <li> <a href="#lines">Line Sparklines</a> </li>
   <li> <a href="#bars">Bar Sparklines</a> </li>
   <li> <a href="#custom">Customizing Sparklines</a> </li>
+  <li> <a href="#download">Download</a> </li>
   <li> <a href="#source">Source Code</a> </li>
   
 </ul>
 
 
-<p>
+<p id="overview">
 Sparklines.js is a simple javascript utility for building sparklines.
 It has support for displaying lines at percentage points (for example,
 the 0.25 percentage point is the equivalent of Q1, 0.5 is Q2 (the
@@ -343,7 +345,21 @@ to
 <code>MySparkline.prototype = new BarSparkline();</code>.
 </p>
 
+<hr>
+<h2 id="download"> Download </h2>
 
+<p>
+There are no downloadable copies yet. Sorry. This will happen in the
+near future.
+</p>
+
+<p>
+If you want to make your own deployment copy, its fairly simple.
+First you need to merge <code>processing.js</code> and
+<code>sparklines.js</code> into one javascript file. Preferably
+called <code>sparklines_deploy.js</code>, for consistency. Then
+minify that file using something like <code>jsmin.py</code>.
+</p>
 
 <hr>
 <h2 id="source"> Source </h2>
