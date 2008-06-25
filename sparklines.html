@@ -35,7 +35,6 @@ var setup_sparklines = function() {
   var data3 = [120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
   opts = {"value_lines":[80,120],"top_padding":5,"bottom_padding":0,"fill_between_value_lines":true};
   new Sparkline('simple9', data3, opts).draw();
-
   opts ={"value_lines":[90,110],"top_padding":5,"bottom_padding":0,
          "fill_between_value_lines":true,
          "percentage_lines":[0.25,0.75],
@@ -43,15 +42,34 @@ var setup_sparklines = function() {
   new Sparkline('simple10', data3, opts).draw();
   new Sparkline('simple11', data3, opts).draw();
   new Sparkline('simple12', data3, opts).draw();
-
   new BarSparkline('bar1',data3).draw();
+  opts = {'percentage_lines':[0.25,0.75],"fill_between_percentage_lines":true};
+  new BarSparkline('bar2',data3,opts).draw();
+  opts = {'percentage_lines':[0.25,0.75],"fill_between_percentage_lines":true,"extend_markings":false};
+  new BarSparkline('bar3',data3,opts).draw();
+  opts = {'percentage_lines':[0.25,0.75],"fill_between_percentage_lines":true,
+          'padding_between_bars':2,"left_padding":30,"right_padding":30,
+  'marking_padding':16};
+  new BarSparkline('bar4',data3,opts).draw();
+  
+
 };
 
 
 </script>
 
 <body onload="setup_sparklines();">
-<h1>Sparklines.js</h1>
+<h1 id="top">Sparklines.js</h1>
+
+<ul>
+  <li> <a href="#data">Data Formats</a> </li>
+  <li> <a href="#lines">Line Sparklines</a> </li>
+  <li> <a href="#bars">Bar Sparklines</a> </li>
+  <li> <a href="#custom">Customizing Sparklines</a> </li>
+  <li> <a href="#source">Source Code</a> </li>
+  
+</ul>
+
 
 <p>
 Sparklines.js is a simple javascript utility for building sparklines.
@@ -80,7 +98,7 @@ its examples. By combining elements of different examples, you should
 be able to construct the sparkline of your dreams.
 </p>
 
-<h3> Data Sources </h3>
+<h3 id="data"> Data Sources </h3>
 
 <p>
 A quick note about the format of data sources that are given to the
@@ -110,7 +128,7 @@ with sparklines.
 </p>
 
 <hr>
-<h2> Line Sparklines </h2>
+<h2 id="lines""> Line Sparklines </h2>
 
 <p>
 The first type of Sparkline is the line sparkline, which represents
@@ -234,13 +252,101 @@ the padding, since its a bit too much at this small size.)
 <canvas width="100" height="50" id="simple12" ></canvas>
 
 <hr>
-<h2> Bar Sparklines </h2>
+<h2 id="bars"> Bar Sparklines </h2>
 
+<p>
+Bar sparklines can be clearer about conveying some
+types of information than line sparklines. They are
+more explicit about exact quatities, but are often
+less effective at exposing trends within the data
+they are graphing.
+</p>
+
+<hr>
+<p> Lets start with the simplest of bar sparklines. </p>
+<pre><code>var data3 =
+[120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+new Sparkline('bar11', data3).draw();</code></pre>
 <canvas width="500" height="200" id="bar1" ></canvas>
+
+<hr>
+<p> And add a nice filled region between Q1 and Q3. </p>
+<pre><code>var data3 = [120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts = {'percentage_lines':[0.25,0.75],"fill_between_percentage_lines":true};
+new Sparkline('bar2', data3).draw();</code></pre>
+<canvas width="500" height="200" id="bar2" ></canvas>
+
+<hr>
+<p> Notice that the percentage lines and fill between them extend
+beyond the bars. Personally, I think that looks better, but you may
+want to disable that. </p>
+<pre><code>var data3 = [120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts ={'percentage_lines':[0.25,0.75],"fill_between_percentage_lines":true, "extend_markings":false};
+new Sparkline('bar3', data3).draw();</code></pre>
+<canvas width="500" height="200" id="bar3" ></canvas>
+
+<hr>
+<p>
+Maybe we want less space between lines, and some extra padding
+from the sides, and while we're at it lets make that extra padding for
+the percentage lines and filling a bit wider as well.
+</p>
+<pre><code>var data3 =[120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts = {'percentage_lines':[0.25,0.75],"fill_between_percentage_lines":true,
+            'padding_between_bars':2,"left_padding":30,"right_padding":30,
+            'marking_padding':16};
+new Sparkline('bar4', data3).draw();</code></pre>
+</code></pre>
+<canvas width="500" height="200" id="bar4" ></canvas>
 
 
 <hr>
-<h2> Source </h2>
+<h2 id="custom"> Customizing Sparklines </h2>
+
+<p>
+The simplest way to customize a sparkline is to pass in a
+dictionary of modified attributes. This is the technique
+that is used in all the examples on this page. It looks
+something like this:
+</p>
+
+<pre><code>var data = [100,500,300,200,400,500,400,400,100,200];
+var opts = {'left_padding':50,'right_padding':50,'top_padding':25, 'bottom_padding':25};
+new Sparkline('simple2',data, opts).draw();</code></pre>
+
+<p>
+If you end up doing a large number of similar sparklines, you
+may begin to feel that passing the arguments in each time is
+getting a bit redundant. In such a case, you can subclass the
+<em>Sparkline</em> or <em>BarSparkline</em> classes to
+look the way you prefer. For example:
+</p>
+
+<pre><code>var MySparkline = function(id,data,mixins) {
+  this.background = "rgba(255,255,255,1);";
+  this.stroke = "rga(100,100,100,.7);";
+  this.top_padding = 3;
+  this.bottom_padding = 3;
+  this.left_padding = 6;
+  this.right_padding = 6;
+  this.init(id,data,mixins);
+}
+MySparkline.prototype = new Sparkline();
+
+new MySparkline("canvas_a",[1,2,3,4]);</code></pre>
+
+<p>
+If you wanted to customize <em>BarSparkline</em> instead, you
+would change the line
+<code>MySparkline.prototype = new Sparkline();</code>
+to 
+<code>MySparkline.prototype = new BarSparkline();</code>.
+</p>
+
+
+
+<hr>
+<h2 id="source"> Source </h2>
 <ul>
   <li> <a href="sparklines.js">sparklines.js</a> </li>
   <li> <a href="http://ejohn.org/blog/processingjs/">Processing.js</a> </li>

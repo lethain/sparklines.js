@@ -4,7 +4,7 @@
 var BaseSparkline = function() {
   this.init = function(id,data,mixins) {
     this.background = 50;
-    this.stroke = 230;
+    this.stroke = "rgba(230,230,230,0.70);";
     this.percentage_color = "#5555FF";
     this.percentage_fill_color = 75;
     this.value_line_color = "#7777FF";
@@ -170,8 +170,10 @@ var Sparkline = function(id,data,mixins) {
 Sparkline.prototype = new BaseSparkline();
 
 var BarSparkline = function(id,data,mixins) {
-  this.init(id,data,mixins);
+  this.marking_padding = 5;
   this.padding_between_bars = 5;
+  this.extend_markings = true;
+  this.init(id,data,mixins);
   this.segment_width = function() {
     var l = this.data.length;
     var w = this.width();
@@ -185,7 +187,7 @@ var BarSparkline = function(id,data,mixins) {
       widths.push((i*segment_width)+(this.padding_between_bars*i)+this.left_padding);
     }
     return widths;
-  }
+  };
 
   this.draw = function() {
     var sl = this;
@@ -194,8 +196,36 @@ var BarSparkline = function(id,data,mixins) {
 	background(sl.background);
 	var scaled = sl.scale_data();
 	var l = scaled.length;
+	var sw = sl.segment_width();
+	var gap = sl.padding_between_bars;
+	var mp = sl.marking_padding;
+
+	// Draw fill between percentage files (if applicable).
+	var percentages = sl.calc_percentages();
+	if (sl.fill_between_percentage_lines && percentages.length > 1) {
+	  noStroke();
+	  fill(sl.percentage_fill_color);
+	  var height = percentages[percentages.length-1] - percentages[0];
+	  var width = scaled[l-1].x - scaled[0].x + sw;
+	  if (sl.extend_markings) {
+	    width += 2 * mp;
+	    rect(scaled[0].x - mp, percentages[0], width, height);
+	  }
+	  else rect(scaled[0].x, percentages[0], width, height);
+	}
+	// Draw percentage lines.
+	stroke(sl.percentage_color);
+	for (var j=0;j<percentages.length;j++) {
+	  var y = percentages[j];
+	  if (sl.extend_markings) {
+	    line(scaled[0].x - mp,y,scaled[l-1].x+ mp + sw,y);
+	  }
+	  else line(scaled[0].x,y,scaled[l-1].x+sw,y);
+	}
 
 	// Draw bars.
+	stroke(sl.stroke);
+	fill(sl.stroke);
 	var width = sl.segment_width();
 	var height = sl.height();
 	for (var i=0;i<l;i++) {
