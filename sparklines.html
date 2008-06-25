@@ -43,6 +43,8 @@ var setup_sparklines = function() {
   new Sparkline('simple10', data3, opts).draw();
   new Sparkline('simple11', data3, opts).draw();
   new Sparkline('simple12', data3, opts).draw();
+
+  new BarSparkline('bar1',data3).draw();
 };
 
 
@@ -234,6 +236,7 @@ the padding, since its a bit too much at this small size.)
 <hr>
 <h2> Bar Sparklines </h2>
 
+<canvas width="500" height="200" id="bar1" ></canvas>
 
 
 <hr>

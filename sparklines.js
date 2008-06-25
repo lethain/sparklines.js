@@ -35,9 +35,15 @@ var BaseSparkline = function() {
     for (var i=0; i<l; i++) max = Math.max(max, vals[i]);
     return max;
   };
+  this.height = function() {
+    return this.canvas.height - this.top_padding - this.bottom_padding;
+  };
+  this.width = function() {
+    return this.canvas.width - this.left_padding - this.right_padding;
+  }
   this.scale_values = function(values, max) {
     if (!max) max = this.max();
-    var h = this.canvas.height - this.top_padding - this.bottom_padding;
+    var h = this.height();
     var scale = function(x) {
       var percentage = (x * 1.0) / max;
       return h - (h * percentage) + this.top_padding;
@@ -77,11 +83,15 @@ var BaseSparkline = function() {
     return this.scale_values(this.heights());
   };
 
+  this.segment_width = function() {
+    var w = this.width();
+    var l = this.data.length;
+    return (w * 1.0) / (l-1);
+  };
   this.scale_width = function() {
-    var w = this.canvas.width - this.left_padding - this.right_padding;
     var widths = [];
     var l = this.data.length;
-    var segment_width = (w * 1.0) / (l-1);
+    var segment_width = this.segment_width();
     for (var i=0; i<l; i++) {
       widths.push((i*segment_width)+this.left_padding);
     }
@@ -158,3 +168,47 @@ var Sparkline = function(id,data,mixins) {
   this.init(id,data,mixins);
 }
 Sparkline.prototype = new BaseSparkline();
+
+var BarSparkline = function(id,data,mixins) {
+  this.init(id,data,mixins);
+  this.padding_between_bars = 5;
+  this.segment_width = function() {
+    var l = this.data.length;
+    var w = this.width();
+    return ((w * 1.0) - ((l-1) * this.padding_between_bars)) / l;
+  };
+  this.scale_width = function() {
+    var widths = [];
+    var l = this.data.length;
+    var segment_width = this.segment_width();
+    for (var i=0; i<l; i++) {
+      widths.push((i*segment_width)+(this.padding_between_bars*i)+this.left_padding);
+    }
+    return widths;
+  }
+
+  this.draw = function() {
+    var sl = this;
+    with(Processing(sl.canvas)) {
+      draw = function() {
+	background(sl.background);
+	var scaled = sl.scale_data();
+	var l = scaled.length;
+
+	// Draw bars.
+	var width = sl.segment_width();
+	var height = sl.height();
+	for (var i=0;i<l;i++) {
+	  var d = scaled[i];
+	  rect(d.x,d.y,width,height-d.y);
+
+	};
+	this.exit();
+      };
+      init();
+    };
+  };
+
+
+}
+BarSparkline.prototype = new BaseSparkline();
