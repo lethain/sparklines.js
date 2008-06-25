@@ -52,9 +52,11 @@ var setup_sparklines = function() {
   'marking_padding':16};
   new BarSparkline('bar4',data3,opts).draw();
 
-  opts = {'value_lines':[85,115], 'fill_between_value_lines':true};
+  opts = {'value_lines':[85,115]};
   new BarSparkline('bar5',data3,opts).draw();
 
+  opts = {'value_lines':[80,120],"fill_between_value_lines":true,"padding_between_bars":0,"bottom_padding":1};
+  new BarSparkline('bar6',data3,opts).draw();
 };
 
 
@@ -317,8 +319,20 @@ new Sparkline('bar4', data3).draw();</code></pre>
 Our old friends, value lines, are still available to draw lines at
 values instead of at percentages points.
 </p>
-<pre><code></code></pre>
+<pre><code>var data3 =[120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts = {'value_lines':[85,115]};
+new BarSparkline('bar5',data3,opts).draw();</code></pre>
 <canvas width="400" height="150" id="bar5" ></canvas>
+
+<hr>
+<p>
+And we can fill between the value lines too. And take away the spacing
+between bars, if we feel like it.
+</p>
+<pre><code>var data3 =[120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts = {'value_lines':[80,120],"fill_between_value_lines":true,"padding_between_bars":0,"bottom_padding":3};
+new BarSparkline('bar6',data3,opts).draw();</code></pre>
+<canvas width="500" height="100" id="bar6"></canvas>
 
 
 

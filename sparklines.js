@@ -200,7 +200,32 @@ var BarSparkline = function(id,data,mixins) {
 	var gap = sl.padding_between_bars;
 	var mp = sl.marking_padding;
 
-	// Draw fill between percentage files (if applicable).
+
+	// Draw fill between value lines (if applicable).
+	var value_lines = sl.calc_value_lines();
+	if (sl.fill_between_value_lines && value_lines.length > 1) {
+	  noStroke();
+	  fill(sl.percentage_fill_color);
+	  var height = value_lines[value_lines.length-1] - value_lines[0];
+	  var width = scaled[l-1].x - scaled[0].x + sw;
+	  if (sl.extend_markings) {
+	    width += 2 * mp;
+	    rect(scaled[0].x - mp, value_lines[0], width, height);
+	  }
+	  else rect(scaled[0].x, value_lines[0], width, height);
+	}
+
+	// Draw value lines.
+	stroke(sl.value_line_color);
+	for (var h=0;h<value_lines.length;h++) {
+	  var y = value_lines[h];
+	  if (sl.extend_markings) {
+	    line(scaled[0].x - mp,y,scaled[l-1].x+ mp + sw,y);
+	  }
+	  else line(scaled[0].x,y,scaled[l-1].x+sw,y);
+	}
+
+	// Draw fill between percentage lines (if applicable).
 	var percentages = sl.calc_percentages();
 	if (sl.fill_between_percentage_lines && percentages.length > 1) {
 	  noStroke();
