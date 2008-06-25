@@ -51,7 +51,9 @@ var setup_sparklines = function() {
           'padding_between_bars':2,"left_padding":30,"right_padding":30,
   'marking_padding':16};
   new BarSparkline('bar4',data3,opts).draw();
-  
+
+  opts = {'value_lines':[85,115], 'fill_between_value_lines':true};
+  new BarSparkline('bar5',data3,opts).draw();
 
 };
 
@@ -69,7 +71,9 @@ var setup_sparklines = function() {
   <li> <a href="#custom">Customizing Sparklines</a> </li>
   <li> <a href="#download">Download</a> </li>
   <li> <a href="#source">Source Code</a> </li>
-  
+  <li> <a href="#about">About</a> </li>
+  <li> <a href="#contact">Contact</a> </li>
+  <li> <a href="#license">License</a> </li>
 </ul>
 
 
@@ -308,6 +312,15 @@ new Sparkline('bar4', data3).draw();</code></pre>
 </code></pre>
 <canvas width="500" height="200" id="bar4" ></canvas>
 
+<hr>
+<p>
+Our old friends, value lines, are still available to draw lines at
+values instead of at percentages points.
+</p>
+<pre><code></code></pre>
+<canvas width="400" height="150" id="bar5" ></canvas>
+
+
 
 <hr>
 <h2 id="custom"> Customizing Sparklines </h2>
@@ -376,6 +389,34 @@ minify that file using something like <code>jsmin.py</code>.
 </ul>
 
 <hr>
-<p><a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>, by <a href="http://lethain.com">Will Larson</a></p>
+<h2 id="about"> About </h2>
+<p>
+This project is inspired by a number of sources, and almost all of
+those sources have appeared in my life as the result of readings and
+research direct my way by <a href="">J.D. Hollis</a>. Beyond that,
+J.D. has also provided feedback about the project, along with
+a critical eye. 
+</p>
+
+<p>
+There is a huge amount of thinking about informational design
+going on at the moment, and this project might be described as
+a small attempt to make a small piece of that information
+easier to take advantage of.
+</p>
+
+
+<hr>
+<h2 id="contact"> Contact </h2>
+
+<p>
+Feel free to send requests, comments and complaints about this project
+to <code>lethain@gmail.com</code>.
+</p>
+
+<hr>
+<h2 id="license"> License </h2>
+
+<p> This project has been released under the <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> by <a href="http://lethain.com">Will Larson</a></p>
 
 </body> </html>
