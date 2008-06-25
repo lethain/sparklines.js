@@ -32,11 +32,17 @@ var setup_sparklines = function() {
           "percentage_fill_color":"#CCCCFF"};
   new Sparkline('simple8', data2, opts).draw();
 
-  var data3 =
-  [120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
-  opts = {"value_lines":[80,120],"top_padding":5,"bottom_padding":0};
+  var data3 = [120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+  opts = {"value_lines":[80,120],"top_padding":5,"bottom_padding":0,"fill_between_value_lines":true};
   new Sparkline('simple9', data3, opts).draw();
-  
+
+  opts ={"value_lines":[90,110],"top_padding":5,"bottom_padding":0,
+         "fill_between_value_lines":true,
+         "percentage_lines":[0.25,0.75],
+         "percentage_color":"#FF6666"};
+  new Sparkline('simple10', data3, opts).draw();
+  new Sparkline('simple11', data3, opts).draw();
+  new Sparkline('simple12', data3, opts).draw();
 };
 
 
@@ -44,6 +50,71 @@ var setup_sparklines = function() {
 
 <body onload="setup_sparklines();">
 <h1>Sparklines.js</h1>
+
+<p>
+Sparklines.js is a simple javascript utility for building sparklines.
+It has support for displaying lines at percentage points (for example,
+the 0.25 percentage point is the equivalent of Q1, 0.5 is Q2 (the
+median), and 0.75 is Q3), and at fixed values in terms of your data
+set. (You might want lines at 80,120 in a chart of blood pressure
+values, for example, where the data points would be something like
+100,50,60,70,100 and so on, to indicate the points outside of normal range.)
+</p>
+<p>
+The sparklines will size themselves appropriately to any size canvas
+they are given. Be wary that charts can tell very different stories
+depending on how they are sized, and that you are responsible for
+giving a reasonable size for the chart to display itself on.
+</p>
+
+<p>
+At this point its goal is to support two primary display styles: line
+charts and bar charts. Switching between the two is quite
+easy.
+</p>
+<p>
+This page starts off simple and gets increasingly more complex with
+its examples. By combining elements of different examples, you should
+be able to construct the sparkline of your dreams.
+</p>
+
+<h3> Data Sources </h3>
+
+<p>
+A quick note about the format of data sources that are given to the
+sparklines. The expected standard data is simple an array of height
+values (absolute values are fine, they'll be scaled to the size of the
+sparkline, so no worries there). However, you might want to pass it a
+much more complex data set. You have two options. First, you can
+extract the heights form your data set before passing it to the
+sparkline, or you can write a function that instructions the sparkline
+how to do that itself.
+</p>
+
+<p>
+Here is a simple example demonstrating how the later method works.
+</p>
+
+<pre><code>var a = {'height':100,'name':"A"};
+var b = {'height':150','name'="B"};
+var data = [a,b];
+var extract = function(x) { return x.height; };
+var opts = {"parse_height":extract};
+new Sparkline("canvas_id", data, opts);</code></pre>
+
+<p>
+This should allow sufficient flexibility for using custom data sets
+with sparklines.
+</p>
+
+<hr>
+<h2> Line Sparklines </h2>
+
+<p>
+The first type of Sparkline is the line sparkline, which represents
+data in a simple line format.
+
+</p>
 
 <hr>
 <p> A simple sparkline. </p>
@@ -122,25 +193,51 @@ new Sparkline('simple8', data2, opts).draw();</code></pre>
 
 <hr>
 <p>
-<em>Well, this one isn't really working yet. Sorry, work in progress.</em>
 But, you might not want to draw lines at the quartiles (or at
 whatever arbitrary percentage of entries), you might want to draw
 lines at certain values instead. For example, you might want to
 indicate the normal range of blood pressure in a patient.
 </p>
-<pre><code>var data2 = [100,200,500,1000,600,900,300,500,800,800,900,1000,50,40,200,100,900,300,400,400,600,700,800,900,700,800,50,100,100];
-var  opts = {
-  "percentage_lines":[0.25,0.5,0.75],"fill_between_percentage_lines":true,
-  "left_padding":1,"right_padding":1,"top_padding":1,"bottom_padding":1,
-  "background":"#FFFFFF","stroke":"#444444","percentage_color":"#AAAAFF",
-  "percentage_fill_color":"#CCCCFF"
-};
-new Sparkline('simple8', data2, opts).draw();</code></pre>
+<pre><code>var data3 =
+[120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts = {"value_lines":[80,120],"top_padding":5,"bottom_padding":0,"fill_between_value_lines":true};
+new Sparkline('simple9', data3, opts).draw();</code></pre>
 <canvas width="200" height="50" id="simple9" ></canvas>
 
+<hr>
+<p>
+For fun, lets add some percentage lines into the mix as well.
+</p>
+<pre><code>var data3 =
+[120,130,80,100,90,105,95,60,70,75,70,90,100,110,120,130,150,100,50,80,90,100,110,110];
+var opts ={"value_lines":[90,110],"top_padding":5,
+           "bottom_padding":0,"fill_between_value_lines":true,
+           "percentage_lines":[0.25,0.75],"percentage_color":"#FF6666"
+};
+  new Sparkline('simple10', data3, opts).draw();
+new Sparkline('simple10', data3, opts).draw();</code></pre>
+<canvas width="500" height="200" id="simple10" ></canvas>
+
+<p> Lets see that at a few different sizes. The one above it 500px by
+200px. Lets try it at 300px by 100px.
+</p>
+
+<canvas width="300" height="100" id="simple11" ></canvas>
+
+<p>
+And maybe at 100px by 50px. (Although, we'd really want to reduce
+the padding, since its a bit too much at this small size.)
+</p>
+
+<canvas width="100" height="50" id="simple12" ></canvas>
+
+<hr>
+<h2> Bar Sparklines </h2>
 
 
-<h4> Source </h4>
+
+<hr>
+<h2> Source </h2>
 <ul>
   <li> <a href="sparklines.js">sparklines.js</a> </li>
   <li> <a href="http://ejohn.org/blog/processingjs/">Processing.js</a> </li>

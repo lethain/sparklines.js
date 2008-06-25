@@ -6,7 +6,7 @@ var Sparkline = function(id,data,mixins) {
   this.stroke = 230;
   this.percentage_color = "#5555FF";
   this.percentage_fill_color = 75;
-  this.value_line_color = "##7777FF";
+  this.value_line_color = "#7777FF";
   this.value_line_fill_color = 85;
   this.canvas = document.getElementById(id);
   this.data = data;
@@ -42,7 +42,9 @@ var Sparkline = function(id,data,mixins) {
       var percentage = (x*1.0)/max;
       return h - (h * percentage) + this.top_padding;
     };
-    return vals.map(scale);
+    var scaled = this.value_lines.map(scale, this);
+    scaled.sort(function(a,b) { return a-b; });
+    return scaled;
   };
 
   this.calc_percentages = function() {
@@ -135,8 +137,20 @@ var Sparkline = function(id,data,mixins) {
 	  rect(scaled[0].x, percentages[0], width, height);
 	}
 
-	// Draw value lines.
+	  //var value_line_fill_color
+
+
 	var value_lines = sl.calc_value_lines();
+	// Draw fill between value lines, if applicable.
+	if (sl.fill_between_value_lines && value_lines.length > 1) {
+	  noStroke();
+	  fill(sl.value_line_fill_color);
+	  var height = value_lines[value_lines.length-1] - value_lines[0];
+	  var width = scaled[l-1].x - scaled[0].x;
+	  rect(scaled[0].x, value_lines[0], width, height);
+
+	}
+
 	// Draw value lines.
 	stroke(sl.value_line_color);
 	for (var h=0;h<value_lines.length;h++) {
