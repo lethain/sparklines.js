@@ -94,13 +94,20 @@ At this point its goal is to support two primary display styles: line
 charts and bar charts. Switching between the two is quite
 easy.
 </p>
+
 <p>
-This page starts off simple and gets increasingly more complex with
-its examples. By combining elements of different examples, you should
-be able to construct the sparkline of your dreams.
+Sparklines.js is currently piggybacking off of Processing.js to
+provide its rendering, but will likely remove that dependency once
+the pace of development slows down and it becomes clear which
+features will need to be extracted. Processing.js is excellent
+for prototyping projects, and is very pleasant to work with,
+and the decoupling's justification is reduction of filesize by
+removing functionality that is not used by (the fairly simple
+demands of) Sparklines.js.
 </p>
 
-<h3 id="data"> Data Sources </h3>
+<hr>
+<h2 id="data"> Data Sources </h2>
 
 <p>
 A quick note about the format of data sources that are given to the
