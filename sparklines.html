@@ -96,10 +96,33 @@ giving a reasonable size for the chart to display itself on.
 </p>
 
 <p>
-At this point its goal is to support two primary display styles: line
-charts and bar charts. Switching between the two is quite
-easy.
+Charts can be displayed via line charts, or via bar charts, and allow
+for a high degree of customization. In addition, there is support for
+demarcating absolute values within the values, and also support for
+displaying lines at certain percentiles (for example, you might wish
+to display lines at the 25th and 75th percentile). Beyond that, it is
+possible to fill in the areas between two percentile or two absolute
+value lines, which is a helpful visualization to showing which values
+lie between the two points.
 </p>
+
+<p>
+Other statistical analysis functions will likely be added over time.
+Feel free to <a href="#contact">suggest</a> anything that you feel
+is missing.
+</p>
+
+
+<p> Oh, and if you're just here for a minute, here are some of my
+favorite sparklines from the examples:<p>
+
+<ul>
+  <li> <a href="#simple7">simple7</a></li>
+  <li> <a href="#simple8">simple8</a></li>
+  <li> <a href="#simple11">simple11</a></li>
+  <li> <a href="#bar4">bar4</a></li>
+  <li> <a href="#bar6">bar6</a></li>
+</ul>
 
 <p>
 Sparklines.js is currently piggybacking off of Processing.js to
@@ -117,9 +140,9 @@ demands of) Sparklines.js.
 
 <p>
 A quick note about the format of data sources that are given to the
-sparklines. The expected standard data is simple an array of height
-values (absolute values are fine, they'll be scaled to the size of the
-sparkline, so no worries there). However, you might want to pass it a
+sparklines. The expected standard data is simple: an array of height
+values (absolute values, since they'll be scaled to the size of the
+sparkline). However, you might want to pass it a
 much more complex data set. You have two options. First, you can
 extract the heights form your data set before passing it to the
 sparkline, or you can write a function that instructions the sparkline
