@@ -54,9 +54,9 @@ var BaseSparkline = function() {
     if (!max) max = this.max();
     var p = this.top_padding;
     var h = this.height();
-    var top = this.scale_from ? this.scale_from : max;
-    var bottom = this.scale_to ? this.scale_to : this.min();
-    var range = top - bottom;
+    var top = (this.scale_to != undefined) ? this.scale_to : max;
+    var bottom = (this.scale_from != undefined) ? this.scale_from : this.min();
+    var range = Math.abs(top - bottom);
     var scale = function(x) {
       var percentage = ((x-bottom)*1.0) / range;
       return h - (h * percentage) + p;
@@ -183,9 +183,13 @@ var Sparkline = function(id,data,mixins) {
 Sparkline.prototype = new BaseSparkline();
 
 var BarSparkline = function(id,data,mixins) {
+  if (!mixins) mixins = {};
+
   this.marking_padding = 5;
   this.padding_between_bars = 5;
   this.extend_markings = true;
+  if (!mixins.hasOwnProperty('scale_from')) mixins.scale_from = 0;
+
   this.init(id,data,mixins);
   this.segment_width = function() {
     var l = this.data.length;
