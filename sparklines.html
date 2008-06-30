@@ -170,27 +170,38 @@ with sparklines.
 <h2 id="scaling"> Scaling Data </h2>
 
 <p>
-There are two options for scaling data. You may scale from <em>from
-zero to max</em> or you may scale <em>from min to max</em>. The
-difference between the two is that the former will show the chart
-as if it was starting at zero, whereas the second will maximize
-the available space, and only shows the range between the minimum
-and maximum values.
+Scaling data is very simple. By default BarSparklines scale from
+<em>zero</em> to <em>max</em>, and LineSparklines scale from
+<em>min</em> to </em>max</em>. However, you can customize this
+behavior.
 </p>
 <p>
-The default behavior of the library is to scale from zero to max,
-which is entirely appropriate for bar charts, but can cause line
-charts to look rather awkward. You may access the <em>min to
-max</em> behavior as follows:
+For example, a line sparkline scaling from <em>zero</em> to
+<em>max</em>.
 </p>
 
-<pre><code>var opts = {'scale_from_zero':false};
+<pre><code>var opts = {'scale_from':0};
 var data = [1,2,3,4,5,6];
 new Sparkline("canvas_id",data,opts);</code></pre>
 
 <p>
-An upcoming version of this library will support
-arbitrary starting and ending points.
+And a bar sparkline scaling from <em>min</em> to
+<em>max</em> is easy as well.
+</p>
+<pre><code>var opts = {'scale_from':undefined};
+var data = [1,2,3,4,5,6];
+new BarSparkline("canvas_id",data,opts);</code></pre>
+
+<p>And finaly a line sparkline scaling from 50 to 150.</p>
+
+<pre><code>var opts = {'scale_from':50,'scale_to':150};
+var data = [1,2,3,4,5,6];
+new Sparkline("canvas_id",data,opts);</code></pre>
+
+<p>
+This should provide sufficient flexibility to size the
+chart's viewport to emphasize the trend in the data that
+is particularly interesting to you.
 </p>
 
 <hr>
