@@ -11,7 +11,8 @@ var BaseSparkline = function() {
     this.value_line_fill_color = 85;
     this.canvas = document.getElementById(id);
     this.data = data;
-    this.scale_from_zero = true;
+    this.scale_from = undefined;
+    this.scale_to = undefined;
     this.top_padding = 10;
     this.bottom_padding = 10;
     this.left_padding = 10;
@@ -53,21 +54,13 @@ var BaseSparkline = function() {
     if (!max) max = this.max();
     var p = this.top_padding;
     var h = this.height();
-    var scale;
-    if (this.scale_from_zero == true) {
-      scale = function(x) {
-	var percentage = (x * 1.0) / max;
-	return h - (h * percentage) + p;
-      };
-    }
-    else {
-      var min = this.min();
-      var value_range = max - min;
-      scale = function(x) {
-	var percentage = ((x-min)*1.0) / value_range;
-	return h - (h * percentage) + p;
-      };
-    }
+    var top = this.scale_from ? this.scale_from : max;
+    var bottom = this.scale_to ? this.scale_to : this.min();
+    var range = top - bottom;
+    var scale = function(x) {
+      var percentage = ((x-bottom)*1.0) / range;
+      return h - (h * percentage) + p;
+    };
     return values.map(scale, this);
   };
 
