@@ -68,6 +68,7 @@ var setup_sparklines = function() {
 <ul>
   <li> <a href="#overview">Overview</a> </li>
   <li> <a href="#data">Data Formats</a> </li>
+  <li> <a href="#scaling">Scaling Data</a> </li>
   <li> <a href="#lines">Line Sparklines</a> </li>
   <li> <a href="#bars">Bar Sparklines</a> </li>
   <li> <a href="#custom">Customizing Sparklines</a> </li>
@@ -163,6 +164,34 @@ new Sparkline("canvas_id", data, opts);</code></pre>
 <p>
 This should allow sufficient flexibility for using custom data sets
 with sparklines.
+</p>
+
+<hr>
+<h2 id="scaling"> Scaling Data </h2>
+
+<p>
+There are two options for scaling data. You may scale from <em>from
+zero to max</em> or you may scale <em>from min to max</em>. The
+difference between the two is that the former will show the chart
+as if it was starting at zero, whereas the second will maximize
+the available space, and only shows the range between the minimum
+and maximum values.
+</p>
+<p>
+The initial version of this library only supported <em>zero to
+max</em> scaling, but mostly as an unintentional bug as opposed to an
+intentional decision. As such, the default behavior of the library
+is now to scale from min to max. You may access the <em>zero to
+max</em> behavior as follows:
+</p>
+
+<pre><code>var opts = {'scale_from_zero':true};
+var data = [1,2,3,4,5,6];
+new Sparkline("canvas_id",data,opts);</code></pre>
+
+<p>
+An upcoming version of this library will support
+arbitrary starting and ending points.
 </p>
 
 <hr>
@@ -430,7 +459,7 @@ minify that file using something like <code>jsmin.py</code>.
 <p>
 This project is inspired by a number of sources, and almost all of
 those sources have appeared in my life as the result of readings and
-research direct my way by <a href="">J.D. Hollis</a>. Beyond that,
+research direct my way by <a href="http://densityofspace.com/">J.D. Hollis</a>. Beyond that,
 J.D. has also provided feedback about the project, along with
 a critical eye. 
 </p>

@@ -11,6 +11,7 @@ var BaseSparkline = function() {
     this.value_line_fill_color = 85;
     this.canvas = document.getElementById(id);
     this.data = data;
+    this.scale_from_zero = false;
     this.top_padding = 10;
     this.bottom_padding = 10;
     this.left_padding = 10;
@@ -32,22 +33,41 @@ var BaseSparkline = function() {
     var vals = this.heights();
     var max = vals[0];
     var l = vals.length;
-    for (var i=0; i<l; i++) max = Math.max(max, vals[i]);
+    for (var i=1; i<l; i++) max = Math.max(max, vals[i]);
     return max;
+  };
+  this.min = function() {
+    var vals = this.heights();
+    var min = vals[0];
+    var l = vals.length;
+    for (var i=1; i<l; i++) min= Math.min(min, vals[i]);
+    return min;
   };
   this.height = function() {
     return this.canvas.height - this.top_padding - this.bottom_padding;
   };
   this.width = function() {
     return this.canvas.width - this.left_padding - this.right_padding;
-  }
+  };
   this.scale_values = function(values, max) {
     if (!max) max = this.max();
+    var p = this.top_padding;
     var h = this.height();
-    var scale = function(x) {
-      var percentage = (x * 1.0) / max;
-      return h - (h * percentage) + this.top_padding;
-    };
+    var scale;
+    if (this.scale_from_zero == true) {
+      scale = function(x) {
+	var percentage = (x * 1.0) / max;
+	return h - (h * percentage) + p;
+      };
+    }
+    else {
+      var min = this.min();
+      var value_range = max - min;
+      scale = function(x) {
+	var percentage = ((x-min)*1.0) / value_range;
+	return h - (h * percentage) + p;
+      };
+    }
     return values.map(scale, this);
   };
 
