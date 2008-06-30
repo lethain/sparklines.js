@@ -178,14 +178,13 @@ the available space, and only shows the range between the minimum
 and maximum values.
 </p>
 <p>
-The initial version of this library only supported <em>zero to
-max</em> scaling, but mostly as an unintentional bug as opposed to an
-intentional decision. As such, the default behavior of the library
-is now to scale from min to max. You may access the <em>zero to
+The default behavior of the library is to scale from zero to max,
+which is entirely appropriate for bar charts, but can cause line
+charts to look rather awkward. You may access the <em>min to
 max</em> behavior as follows:
 </p>
 
-<pre><code>var opts = {'scale_from_zero':true};
+<pre><code>var opts = {'scale_from_zero':false};
 var data = [1,2,3,4,5,6];
 new Sparkline("canvas_id",data,opts);</code></pre>
 
