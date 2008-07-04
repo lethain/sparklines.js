@@ -26,10 +26,10 @@ if (!Array.prototype.map)
 
 var BaseSparkline = function() {
   this.init = function(id,data,mixins) {
-    this.background = 50;
-    this.stroke = "rgba(230,230,230,0.70);";
-    this.percentage_color = "#5555FF";
-    this.percentage_fill_color = 75;
+    this.background_color = 50;
+    this.line_color = "rgba(230,230,230,0.70);";
+    this.percentile_line_color = "#5555FF";
+    this.percentile_fill_color = 75;
     this.value_line_color = "#7777FF";
     this.value_line_fill_color = 85;
     this.canvas = document.getElementById(id);
@@ -40,8 +40,8 @@ var BaseSparkline = function() {
     this.bottom_padding = 10;
     this.left_padding = 10;
     this.right_padding = 10;
-    this.percentage_lines = [];
-    this.fill_between_percentage_lines = false;
+    this.percentile_lines = [];
+    this.fill_between_percentile_lines = false;
     this.value_lines = [];
     this.fill_between_value_lines = false;
     for (var property in mixins) this[property] = mixins[property];
@@ -94,16 +94,16 @@ var BaseSparkline = function() {
     return scaled;
   };
 
-  this.calc_percentages = function() {
+  this.calc_percentiles = function() {
     var sorted = this.heights();
     sorted.sort(function(a,b) { return a-b; });
 
     // Find data points at percentages.
     var points = [];
     var n = sorted.length;
-    var l = this.percentage_lines.length;
+    var l = this.percentile_lines.length;
     for (var i=0;i<l;i++) {
-      var percentage = this.percentage_lines[i];
+      var percentage = this.percentile_lines[i];
       var position = Math.round(percentage*(n+1));
       points.push(sorted[position]);
     }
@@ -148,18 +148,18 @@ var BaseSparkline = function() {
     with(Processing(sl.canvas)) {
       setup = function() {};
       draw = function() {
-	background(sl.background);
+	background(sl.background_color);
 	scaled = sl.scale_data();
 	var l = scaled.length;
 
-	var percentages = sl.calc_percentages();
-	// Draw fill between percentage lines, if applicable.
-	if (sl.fill_between_percentage_lines && percentages.length > 1) {
+	var percentiles = sl.calc_percentiles();
+	// Draw fill between percentile lines, if applicable.
+	if (sl.fill_between_percentile_lines && percentiles.length > 1) {
 	  noStroke();
-	  fill(sl.percentage_fill_color);
-	  var height = percentages[percentages.length-1] - percentages[0];
+	  fill(sl.percentile_fill_color);
+	  var height = percentiles[percentiles.length-1] - percentiles[0];
 	  var width = scaled[l-1].x - scaled[0].x;
-	  rect(scaled[0].x, percentages[0], width, height);
+	  rect(scaled[0].x, percentiles[0], width, height);
 	}
 
 	var value_lines = sl.calc_value_lines();
@@ -179,15 +179,15 @@ var BaseSparkline = function() {
 	  line(scaled[0].x,y,scaled[l-1].x,y);
 	}
 
-	// Draw percentage lines.
-	stroke(sl.percentage_color);
-	for (var j=0;j<percentages.length;j++) {
-	  var y = percentages[j];
+	// Draw percentile lines.
+	stroke(sl.percentile_line_color);
+	for (var j=0;j<percentiles.length;j++) {
+	  var y = percentiles[j];
 	  line(scaled[0].x,y,scaled[l-1].x,y);
 	}
 
 	// Draw lines between data points.
-	stroke(sl.stroke);
+	stroke(sl.line_color);
 	for (var i=1; i<l;i++) {
 	  var curr = scaled[i];
 	  var previous = scaled[i-1];
@@ -233,7 +233,7 @@ var BarSparkline = function(id,data,mixins) {
     var sl = this;
     with(Processing(sl.canvas)) {
       draw = function() {
-	background(sl.background);
+	background(sl.background_color);
 	var scaled = sl.scale_data();
 	var l = scaled.length;
 	var sw = sl.segment_width();
@@ -245,7 +245,7 @@ var BarSparkline = function(id,data,mixins) {
 	var value_lines = sl.calc_value_lines();
 	if (sl.fill_between_value_lines && value_lines.length > 1) {
 	  noStroke();
-	  fill(sl.percentage_fill_color);
+	  fill(sl.percentile_fill_color);
 	  var height = value_lines[value_lines.length-1] - value_lines[0];
 	  var width = scaled[l-1].x - scaled[0].x + sw;
 	  if (sl.extend_markings) {
@@ -265,23 +265,23 @@ var BarSparkline = function(id,data,mixins) {
 	  else line(scaled[0].x,y,scaled[l-1].x+sw,y);
 	}
 
-	// Draw fill between percentage lines (if applicable).
-	var percentages = sl.calc_percentages();
-	if (sl.fill_between_percentage_lines && percentages.length > 1) {
+	// Draw fill between percentile lines (if applicable).
+	var percentiles = sl.calc_percentiles();
+	if (sl.fill_between_percentile_lines && percentiles.length > 1) {
 	  noStroke();
-	  fill(sl.percentage_fill_color);
-	  var height = percentages[percentages.length-1] - percentages[0];
+	  fill(sl.percentile_fill_color);
+	  var height = percentiles[percentiles.length-1] - percentiles[0];
 	  var width = scaled[l-1].x - scaled[0].x + sw;
 	  if (sl.extend_markings) {
 	    width += 2 * mp;
-	    rect(scaled[0].x - mp, percentages[0], width, height);
+	    rect(scaled[0].x - mp, percentiles[0], width, height);
 	  }
-	  else rect(scaled[0].x, percentages[0], width, height);
+	  else rect(scaled[0].x, percentiles[0], width, height);
 	}
-	// Draw percentage lines.
-	stroke(sl.percentage_color);
-	for (var j=0;j<percentages.length;j++) {
-	  var y = percentages[j];
+	// Draw percentile lines.
+	stroke(sl.percentile_line_color);
+	for (var j=0;j<percentiles.length;j++) {
+	  var y = percentiles[j];
 	  if (sl.extend_markings) {
 	    line(scaled[0].x - mp,y,scaled[l-1].x+ mp + sw,y);
 	  }
@@ -289,8 +289,8 @@ var BarSparkline = function(id,data,mixins) {
 	}
 
 	// Draw bars.
-	stroke(sl.stroke);
-	fill(sl.stroke);
+	stroke(sl.line_color);
+	fill(sl.line_color);
 	var width = sl.segment_width();
 	var height = sl.height();
 	for (var i=0;i<l;i++) {
