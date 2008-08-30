@@ -201,6 +201,9 @@ var BaseSparkline = function() {
 };
 
 var Sparkline = function(id,data,mixins) {
+  if (data.length == 1) {
+    data = [data[0],data[0]]
+  }
   this.init(id,data,mixins);
 }
 Sparkline.prototype = new BaseSparkline();
