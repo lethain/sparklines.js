@@ -222,6 +222,7 @@ var BarSparkline = function(id,data,mixins) {
     var w = this.width();
     return ((w * 1.0) - ((l-1) * this.padding_between_bars)) / l;
   };
+
   this.scale_width = function() {
     var widths = [];
     var l = this.data.length;
@@ -230,6 +231,16 @@ var BarSparkline = function(id,data,mixins) {
       widths.push((i*segment_width)+(this.padding_between_bars*i)+this.left_padding);
     }
     return widths;
+  };
+
+  this.scale_data = function() {
+    var heights = this.scale_height();
+    var widths = this.scale_width();
+    var l = heights.length;
+    var data = [];
+    for (var i=0;i<l;i++)
+      data.push({'y':heights[i], 'x':widths[i]});
+    return data;
   };
 
   this.draw = function() {
@@ -243,6 +254,11 @@ var BarSparkline = function(id,data,mixins) {
 	var gap = sl.padding_between_bars;
 	var mp = sl.marking_padding;
 
+	if (sl.data.length == 1) {
+	  scaled[0].y = scaled[0].y * 3;
+	  sl.value_lines = [];
+	  sl.percentile_lines = [];
+	}
 
 	// Draw fill between value lines (if applicable).
 	var value_lines = sl.calc_value_lines();
@@ -299,7 +315,6 @@ var BarSparkline = function(id,data,mixins) {
 	for (var i=0;i<l;i++) {
 	  var d = scaled[i];
 	  rect(d.x,d.y,width,height-d.y);
-
 	};
 	this.exit();
       };
